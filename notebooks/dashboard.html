@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Thời Trang Thương Mại Điện Tử 2012–2022</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #001C44;
+  --teal2:  #0C5776;
+  --teal:   #2D99AE;
+  --sky:    #BCFEFE;
+  --peach:  #F8DAD0;
+  --amber:  #F0B429;
+  --bg:     #021830;
+  --card:   #042246;
+  --border: rgba(45,153,174,0.18);
+  --text:   #BCFEFE;
+  --muted:  rgba(188,254,254,0.5);
+  --white:  #f0faff;
+  --red:    #FF6B6B;
+  --green:  #3fb950;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  padding: 28px 22px 48px;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 5% 0%, rgba(45,153,174,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 95% 100%, rgba(12,87,118,0.13) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(2,24,48,0.6) 0%, transparent 100%);
+}
+
+body::after {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.header {
+  position: relative; z-index:2;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.header-left h1 {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(16px, 2.2vw, 24px);
+  font-weight: 700;
+  color: var(--sky);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.header-left p {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.header-kpis { display: flex; gap: 24px; }
+.kpi { text-align: right; }
+.kpi-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px; font-weight: 700;
+  color: var(--white); line-height: 1;
+}
+.kpi-val.down { color: var(--red); }
+.kpi-val.up   { color: var(--green); }
+.kpi-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
+
+/* ── Grid ────────────────────────────────────────────── */
+.grid {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+
+/* ── Card ────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeUp 0.5s ease both;
+}
+.card:hover {
+  border-color: rgba(45,153,174,0.38);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.card::before {
+  content:''; position: absolute; top:0; left:0; right:0; height:1.5px;
+  background: linear-gradient(90deg, transparent 0%, var(--teal) 40%, rgba(188,254,254,0.6) 60%, transparent 100%);
+  opacity: 0.5;
+}
+
+.card:nth-child(1)  { animation-delay: 0.05s }
+.card:nth-child(2)  { animation-delay: 0.10s }
+.card:nth-child(3)  { animation-delay: 0.15s }
+.card:nth-child(4)  { animation-delay: 0.20s }
+.card:nth-child(5)  { animation-delay: 0.25s }
+.card:nth-child(6)  { animation-delay: 0.30s }
+.card:nth-child(7)  { animation-delay: 0.35s }
+.card:nth-child(8)  { animation-delay: 0.40s }
+.card:nth-child(9)  { animation-delay: 0.45s }
+.card:nth-child(10) { animation-delay: 0.50s }
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(14px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* Spans */
+.s-8  { grid-column: span 8 }
+.s-4  { grid-column: span 4 }
+.s-6  { grid-column: span 6 }
+.s-3  { grid-column: span 3 }
+.s-12 { grid-column: span 12 }
+.s-5  { grid-column: span 5 }
+.s-7  { grid-column: span 7 }
+
+@media (max-width: 1100px) {
+  .s-8,.s-4,.s-6,.s-3,.s-12,.s-5,.s-7 { grid-column: span 12 }
+}
+
+/* ── Card typography ─────────────────────────────────── */
+.c-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 3px;
+}
+.c-title {
+  font-size: 13.5px; font-weight: 700; color: var(--white);
+  margin-bottom: 14px; line-height: 1.3;
+}
+
+/* ── Legend ──────────────────────────────────────────── */
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--muted); }
+.leg-dot  { width:8px; height:8px; border-radius:50%; flex-shrink:0 }
+.leg-line { width:16px; height:2px; border-radius:2px; flex-shrink:0 }
+
+/* ── Insight badge ───────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(248,218,208,0.08);
+  border: 1px solid rgba(248,218,208,0.22);
+  border-radius: 20px; padding: 4px 11px;
+  font-size: 11px; font-weight: 600; color: var(--peach); margin-top: 10px;
+}
+.badge.green { background: rgba(63,185,80,0.08); border-color: rgba(63,185,80,0.25); color: var(--green); }
+.badge.red   { background: rgba(255,107,107,0.08); border-color: rgba(255,107,107,0.25); color: var(--red); }
+
+/* ── Traffic source card ─────────────────────────────── */
+.traffic-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.traffic-row  { display: flex; flex-direction: column; gap: 4px; }
+.traffic-meta { display: flex; justify-content: space-between; align-items: center; }
+.traffic-name { font-size: 11px; font-weight: 600; color: var(--white); display:flex; align-items:center; gap:6px; }
+.traffic-icon { width: 7px; height: 7px; border-radius: 50%; flex-shrink:0; }
+.traffic-pct  { font-family: 'Space Mono', monospace; font-size: 11px; font-weight:700; }
+.traffic-bar-bg {
+  height: 5px; border-radius: 3px;
+  background: rgba(45,153,174,0.12);
+  overflow: hidden;
+}
+.traffic-bar-fill {
+  height: 100%; border-radius: 3px;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  width: 0%;
+}
+
+canvas { display: block }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────────────── -->
+<div class="header">
+  <div class="header-left">
+    <h1>Thời Trang Thương Mại Điện Tử Của Một Công Ty Tại Việt Nam</h1>
+  </div>
+  <div class="header-kpis">
+    <div class="kpi">
+      <div class="kpi-val">646.945</div>
+      <div class="kpi-label">Tổng đơn hàng</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">16,5 tỷ</div>
+      <div class="kpi-label">Tổng doanh thu</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val down">−94,7%</div>
+      <div class="kpi-label">KH mới 2013→2022</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val up">3,94★</div>
+      <div class="kpi-label">Đánh giá TB</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── GRID ───────────────────────────────────────────── -->
+<div class="grid">
+
+  <!-- P1: Revenue & Margin -->
+  <div class="card s-8">
+    <div class="c-tag">Hiệu suất tài chính</div>
+    <div class="c-title">Doanh Thu & Biên Lợi Nhuận Gộp Theo Năm</div>
+    <div style="height:230px"><canvas id="c1"></canvas></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#2D99AE"></div>Doanh thu (tỷ VND)</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(45,153,174,0.35)"></div>COGS (tỷ VND)</div>
+      <div class="leg"><div class="leg-line" style="background:#F8DAD0"></div>Biên GP (%)</div>
+    </div>
+  </div>
+
+  <!-- P2: New customers -->
+  <div class="card s-4">
+    <div class="c-tag">Tăng trưởng người dùng</div>
+    <div class="c-title">Khách Hàng Mới Theo Năm</div>
+    <div style="height:190px"><canvas id="c2"></canvas></div>
+    <div class="badge red">▼ Giảm 94,7% từ đỉnh 2013 (25.099 → 1.322)</div>
+  </div>
+
+  <!-- P3: Seasonality -->
+  <div class="card s-8">
+    <div class="c-tag">Phân tích mùa vụ</div>
+    <div class="c-title">Doanh Thu Trung Bình Theo Tháng</div>
+    <div style="height:190px"><canvas id="c3"></canvas></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#BCFEFE"></div>Cao điểm T4–T6 (+81% vs TB)</div>
+      <div class="leg"><div class="leg-dot" style="background:#2D99AE"></div>Các tháng còn lại</div>
+    </div>
+  </div>
+
+  <!-- P4: Category -->
+  <div class="card s-4">
+    <div class="c-tag">Cơ cấu danh mục</div>
+    <div class="c-title">Tỷ Trọng & Biên GP</div>
+    <div style="height:190px"><canvas id="c4"></canvas></div>
+  </div>
+
+  <!-- P5: AOV -->
+  <div class="card s-3">
+    <div class="c-tag">Giá trị đơn hàng</div>
+    <div class="c-title">AOV Tăng Bền Vững</div>
+    <div style="height:170px"><canvas id="c5"></canvas></div>
+    <div class="badge green">▲ +34% trong 10 năm</div>
+  </div>
+
+  <!-- P6: Return reasons -->
+  <div class="card s-3">
+    <div class="c-tag">Hoàn trả · 39.939 đơn</div>
+    <div class="c-title">Lý Do Trả Hàng</div>
+    <div style="height:170px"><canvas id="c6"></canvas></div>
+    <div class="badge red">35% do Sai kích cỡ</div>
+  </div>
+
+  <!-- P7: Traffic source donut -->
+  <div class="card s-3">
+    <div class="c-tag">Nguồn lưu lượng truy cập</div>
+    <div class="c-title">Phân Bổ Traffic Theo Kênh</div>
+    <div style="height:170px"><canvas id="c7"></canvas></div>
+  </div>
+
+  <!-- P8: Order status -->
+  <div class="card s-3">
+    <div class="c-tag">Vận hành đơn hàng</div>
+    <div class="c-title">Phân Phối Trạng Thái</div>
+    <div style="height:170px"><canvas id="c8"></canvas></div>
+    <div class="badge red">Huỷ + Hoàn trả: 14,8%</div>
+  </div>
+
+  <!-- P9: Traffic vs Revenue paradox -->
+  <div class="card s-7">
+    <div class="c-tag">Nghịch lý chuyển đổi · Pearson r = 0,32</div>
+    <div class="c-title">Traffic Tăng Đều Nhưng Doanh Thu Sụt Giảm — Tỷ lệ chuyển đổi: 3,7% (2013) → 0,12% (2022)</div>
+    <div style="height:200px"><canvas id="c9"></canvas></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:rgba(45,153,174,0.45)"></div>Sessions/năm (triệu)</div>
+      <div class="leg"><div class="leg-line" style="background:#F8DAD0"></div>Doanh thu (tỷ VND)</div>
+      <div class="leg"><div class="leg-line" style="background:#F0B429"></div>Khách hàng mới (nghìn người)</div>
+    </div>
+  </div>
+
+  <!-- P10: Traffic source detail bars -->
+  <div class="card s-5">
+    <div class="c-tag">Kênh dẫn traffic · Toàn kỳ 2013–2022</div>
+    <div class="c-title">Chi Tiết Lưu Lượng Theo Nguồn</div>
+    <div class="traffic-rows" id="trafficRows"></div>
+  </div>
+
+</div><!-- /grid -->
+
+<script>
+// ── Shared config ──────────────────────────────────────────────────
+const F = "'Be Vietnam Pro', sans-serif";
+Chart.defaults.font.family = F;
+Chart.defaults.color = 'rgba(188,254,254,0.55)';
+
+const TEAL  = '#2D99AE';
+const SKY   = '#BCFEFE';
+const PEACH = '#F8DAD0';
+const AMBER = '#F0B429';
+const RED   = '#FF6B6B';
+const GREEN = '#3fb950';
+
+const gl = () => ({ color:'rgba(45,153,174,0.09)', lineWidth:0.8 });
+const al = () => ({ color:'rgba(45,153,174,0.18)' });
+const tk = (c='rgba(188,254,254,0.5)', sz=10) => ({ color:c, font:{ size:sz, family:F } });
+const tt = () => ({
+  backgroundColor:'rgba(4,34,70,0.96)',
+  borderColor:'rgba(45,153,174,0.35)', borderWidth:1,
+  titleColor:SKY, bodyColor:'rgba(188,254,254,0.82)',
+  padding:10, cornerRadius:8,
+  titleFont:{ family:F, weight:'700', size:11 },
+  bodyFont:{ family:F, size:11 }
+});
+
+// ── DATA ───────────────────────────────────────────────────────────
+const YEARS    = [2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022];
+const REV      = [0.741,1.657,1.872,1.890,2.105,1.911,1.850,1.137,1.055,1.043,1.170];
+const COGS     = [0.587,1.466,1.575,1.665,1.781,1.694,1.542,1.005,0.886,0.941,1.020];
+const MARGIN   = [20.8,11.5,15.9,11.9,15.4,11.3,16.6,11.6,16.0,9.8,12.8];
+const NEW_CUST = [22068,25099,13293,8828,6392,4789,3717,1898,1500,1340,1322];
+const MONTHS   = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+const MO_AVG   = [2.59,3.48,4.93,6.53,6.58,6.43,4.66,4.44,3.80,3.30,2.61,2.52];
+
+const CAT_LABELS = ['Casual','GenZ','Outdoor','Streetwear'];
+const CAT_VALS   = [2.8, 2.1, 15.2, 79.9];
+const CAT_MARGIN = [16.2, 23.1, 21.7, 19.7];
+const CAT_COLORS = ['rgba(45,153,174,0.7)','rgba(188,254,254,0.85)','rgba(12,87,118,0.85)','#F8DAD0'];
+
+const AOV_VALS = [23.1,20.4,22.1,21.7,24.5,23.9,25.5,26.0,28.8,28.7,31.0];
+
+const RET_LABELS = ['Sai size','Hàng lỗi','Sai mô tả','Đổi ý','Giao chậm'];
+const RET_VALS   = [13967,8020,7035,6931,3986];
+
+const STATUS_L = ['Giao hàng','Đã huỷ','Hoàn trả','Đang ship','Paid','Tạo đơn'];
+const STATUS_V = [516716,59462,36142,13773,13577,7275];
+
+const TR_YEARS   = [2013,2014,2015,2016,2017,2018,2019,2020,2021,2022];
+const SESSIONS   = [6.80,7.34,7.86,8.40,8.99,9.42,9.99,10.59,10.99,11.06];
+const REV_TR     = [1.657,1.872,1.890,2.105,1.911,1.850,1.137,1.055,1.043,1.170];
+const NEWCUST_TR = [25.099,13.293,8.828,6.392,4.789,3.717,1.898,1.500,1.340,1.322];
+
+const TRAFFIC_DATA = [
+  { name: 'Organic Search', pct: 29.739, color: '#BCFEFE' },
+  { name: 'Paid Search',    pct: 21.430, color: '#2D99AE' },
+  { name: 'Social Media',   pct: 17.294, color: '#F0B429' },
+  { name: 'Email Campaign', pct: 13.988, color: '#F8DAD0' },
+  { name: 'Referral',       pct: 10.363, color: '#3fb950' },
+  { name: 'Direct',         pct:  7.186, color: '#FF6B6B' },
+];
+
+// ══════════════════════════════════════════════════════════════════
+// P1: Revenue + GP Margin
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c1'), {
+  data:{
+    labels: YEARS,
+    datasets:[
+      {
+        type:'bar', label:'Doanh thu (tỷ VND)', data: REV, yAxisID:'y',
+        backgroundColor: YEARS.map(y => y===2016 ? 'rgba(45,153,174,0.95)' : 'rgba(45,153,174,0.55)'),
+        borderRadius:5, borderSkipped:false, order:3
+      },
+      {
+        type:'bar', label:'COGS (tỷ VND)', data: COGS, yAxisID:'y',
+        backgroundColor:'rgba(45,153,174,0.2)',
+        borderRadius:5, borderSkipped:false, order:4
+      },
+      {
+        type:'line', label:'Biên GP (%)', data: MARGIN, yAxisID:'y2',
+        borderColor: PEACH, borderWidth:2.5,
+        pointBackgroundColor: MARGIN.map(v => v===Math.min(...MARGIN) ? RED : v===Math.max(...MARGIN) ? GREEN : PEACH),
+        pointRadius: MARGIN.map(v => (v===Math.min(...MARGIN)||v===Math.max(...MARGIN)) ? 6 : 3.5),
+        tension:0.35, fill:false, order:1
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), callbacks:{
+        label: ctx => {
+          if(ctx.datasetIndex===2) return ` Biên GP: ${ctx.parsed.y.toFixed(1)}%`;
+          return ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)} tỷ`;
+        }
+      }}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:tk() },
+      y:{
+        grid:gl(), border:al(), ticks:{...tk(), callback: v => v.toFixed(1)},
+        title:{display:true, text:'Tỷ VND', color:'rgba(45,153,174,0.45)', font:{size:9,family:F}}
+      },
+      y2:{
+        position:'right', grid:{display:false}, border:al(),
+        ticks:{...tk('rgba(248,218,208,0.6)'), callback: v => v+'%'},
+        min:5, max:25,
+        title:{display:true, text:'Biên GP %', color:'rgba(248,218,208,0.4)', font:{size:9,family:F}}
+      }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P2: New customers
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c2'), {
+  type:'bar',
+  data:{
+    labels: YEARS,
+    datasets:[{
+      data: NEW_CUST,
+      backgroundColor: YEARS.map(y =>
+        y===2013 ? SKY : y<=2015 ? 'rgba(188,254,254,0.55)' : y<=2018 ? TEAL : 'rgba(248,218,208,0.45)'
+      ),
+      borderRadius:4, borderSkipped:false
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), callbacks:{label: c => ` ${c.parsed.y.toLocaleString()} KH mới`}}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:{...tk(),maxRotation:90,font:{size:8.5,family:F}} },
+      y:{ grid:gl(), border:al(), ticks:{...tk(), callback: v => (v/1000).toFixed(0)+'k'} }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P3: Seasonality
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c3'), {
+  type:'bar',
+  data:{
+    labels: MONTHS,
+    datasets:[{
+      data: MO_AVG,
+      backgroundColor: MONTHS.map((_,i) => [3,4,5].includes(i) ? 'rgba(188,254,254,0.85)' : 'rgba(45,153,174,0.55)'),
+      borderRadius:5, borderSkipped:false
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), callbacks:{label: c => ` TB: ${c.parsed.y.toFixed(2)} triệu VND/tháng`}}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:tk() },
+      y:{
+        grid:gl(), border:al(),
+        ticks:{...tk(), callback: v => v.toFixed(1)+' triệu'},
+        title:{display:true, text:'triệu VND/tháng', color:'rgba(45,153,174,0.4)', font:{size:9,family:F}}
+      }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P4: Category donut
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c4'), {
+  type:'doughnut',
+  data:{
+    labels: CAT_LABELS.map((l,i) => `${l} (biên ${CAT_MARGIN[i]}%)`),
+    datasets:[{
+      data: CAT_VALS,
+      backgroundColor: CAT_COLORS,
+      borderColor:'#042246', borderWidth:3, hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, cutout:'60%',
+    plugins:{
+      legend:{
+        position:'bottom',
+        labels:{ color:'rgba(188,254,254,0.6)', font:{size:9.5,family:F}, padding:8, boxWidth:9, usePointStyle:true }
+      },
+      tooltip:{...tt(), callbacks:{ label: c => ` ${c.label}: ${c.parsed.toFixed(1)}% DT` }}
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P5: AOV trend
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c5'), {
+  type:'line',
+  data:{
+    labels: YEARS,
+    datasets:[{
+      data: AOV_VALS,
+      borderColor: PEACH, borderWidth:2.5,
+      pointBackgroundColor: PEACH,
+      pointRadius: AOV_VALS.map((v,i) => i===0||i===AOV_VALS.length-1 ? 5 : 2.5),
+      fill:true,
+      backgroundColor: ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);
+        g.addColorStop(0,'rgba(248,218,208,0.15)');
+        g.addColorStop(1,'rgba(248,218,208,0.01)');
+        return g;
+      },
+      tension:0.45
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), callbacks:{label: c => ` AOV: ${c.parsed.y.toFixed(1)}k VND`}}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:{...tk(),maxRotation:45,font:{size:8.5,family:F}} },
+      y:{
+        grid:gl(), border:al(),
+        ticks:{...tk(), callback: v => v+'k'},
+        title:{display:true, text:'Nghìn VND/đơn', color:'rgba(248,218,208,0.35)', font:{size:9,family:F}}
+      }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P6: Return reasons (horizontal)
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c6'), {
+  type:'bar',
+  data:{
+    labels: RET_LABELS,
+    datasets:[{
+      data: RET_VALS,
+      backgroundColor:[
+        'rgba(248,218,208,0.9)','rgba(248,218,208,0.65)',
+        'rgba(248,218,208,0.48)','rgba(45,153,174,0.6)','rgba(45,153,174,0.38)'
+      ],
+      borderRadius:4, borderSkipped:false
+    }]
+  },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), callbacks:{
+        label: c => ` ${c.parsed.x.toLocaleString()} đơn (${(c.parsed.x/39939*100).toFixed(1)}%)`
+      }}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:{...tk(), callback: v => (v/1000).toFixed(0)+'k'} },
+      y:{ grid:{display:false}, border:al(), ticks:{...tk(),font:{size:9.5,family:F}} }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P7: Traffic source donut
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c7'), {
+  type:'doughnut',
+  data:{
+    labels: TRAFFIC_DATA.map(d => d.name),
+    datasets:[{
+      data: TRAFFIC_DATA.map(d => d.pct),
+      backgroundColor: TRAFFIC_DATA.map(d => d.color),
+      borderColor:'#042246', borderWidth:3, hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, cutout:'58%',
+    plugins:{
+      legend:{
+        position:'bottom',
+        labels:{ color:'rgba(188,254,254,0.6)', font:{size:8.5,family:F}, padding:6, boxWidth:8, usePointStyle:true }
+      },
+      tooltip:{...tt(), callbacks:{ label: c => ` ${c.label}: ${c.parsed.toFixed(3)}%` }}
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P8: Order status (horizontal)
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c8'), {
+  type:'bar',
+  data:{
+    labels: STATUS_L,
+    datasets:[{
+      data: STATUS_V,
+      backgroundColor:[
+        SKY,'rgba(255,107,107,0.7)','rgba(248,218,208,0.65)',
+        'rgba(45,153,174,0.55)','rgba(45,153,174,0.38)','rgba(45,153,174,0.25)'
+      ],
+      borderRadius:4, borderSkipped:false
+    }]
+  },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), callbacks:{ label: c => ` ${c.parsed.x.toLocaleString()} đơn` }}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:{...tk(undefined,9), callback: v => (v/1000).toFixed(0)+'k'} },
+      y:{ grid:{display:false}, border:al(), ticks:{...tk(),font:{size:9.5,family:F}} }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P9: Traffic vs Revenue vs New customers — Triple axis
+// ══════════════════════════════════════════════════════════════════
+new Chart(document.getElementById('c9'), {
+  data:{
+    labels: TR_YEARS,
+    datasets:[
+      {
+        type:'bar', label:'Sessions (triệu)', data: SESSIONS,
+        backgroundColor:'rgba(45,153,174,0.35)', yAxisID:'yS', order:3,
+        borderRadius:5, borderSkipped:false
+      },
+      {
+        type:'line', label:'Doanh thu (tỷ VND)', data: REV_TR,
+        borderColor: PEACH, borderWidth:2.5,
+        pointBackgroundColor: PEACH, pointRadius:4,
+        yAxisID:'yR', order:1, tension:0.35, fill:false
+      },
+      {
+        type:'line', label:'KH mới (nghìn)', data: NEWCUST_TR,
+        borderColor: AMBER, borderWidth:2, borderDash:[5,3],
+        pointBackgroundColor: AMBER, pointRadius:3.5,
+        yAxisID:'yN', order:2, tension:0.35, fill:false
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt(), mode:'index', intersect:false, callbacks:{
+        label: c => {
+          if(c.datasetIndex===0) return ` Sessions: ${c.parsed.y.toFixed(2)}M`;
+          if(c.datasetIndex===1) return ` Doanh thu: ${c.parsed.y.toFixed(3)} tỷ`;
+          return ` KH mới: ${(c.parsed.y*1000).toLocaleString()}`;
+        }
+      }}
+    },
+    scales:{
+      x:{ grid:gl(), border:al(), ticks:tk() },
+      yS:{
+        position:'left', grid:gl(), border:al(),
+        ticks:{...tk(), callback: v => v+'M'},
+        title:{display:true, text:'Sessions (triệu)', color:'rgba(45,153,174,0.5)', font:{size:9,family:F}}
+      },
+      yR:{
+        position:'right', grid:{display:false}, border:al(),
+        ticks:{...tk('rgba(248,218,208,0.6)'), callback: v => v.toFixed(1)+'B'},
+        title:{display:true, text:'Doanh thu (tỷ)', color:'rgba(248,218,208,0.45)', font:{size:9,family:F}}
+      },
+      yN:{
+        position:'right', grid:{display:false},
+        border:{...al(), display:false},
+        ticks:{display:false}, offset:true
+      }
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// P10: Traffic source animated bar rows
+// ══════════════════════════════════════════════════════════════════
+const container = document.getElementById('trafficRows');
+TRAFFIC_DATA.forEach(item => {
+  const row = document.createElement('div');
+  row.className = 'traffic-row';
+  row.innerHTML = `
+    <div class="traffic-meta">
+      <div class="traffic-name">
+        <div class="traffic-icon" style="background:${item.color}"></div>
+        ${item.name}
+      </div>
+      <div class="traffic-pct" style="color:${item.color}">${item.pct.toFixed(3)}%</div>
+    </div>
+    <div class="traffic-bar-bg">
+      <div class="traffic-bar-fill"
+           data-width="${(item.pct / 29.739 * 100).toFixed(1)}"
+           style="background: linear-gradient(90deg, ${item.color}99, ${item.color})">
+      </div>
+    </div>
+  `;
+  container.appendChild(row);
+});
+
+// Animate bars on load
+requestAnimationFrame(() => {
+  setTimeout(() => {
+    document.querySelectorAll('.traffic-bar-fill').forEach(el => {
+      el.style.width = el.dataset.width + '%';
+    });
+  }, 300);
+});
+</script>
+</body>
+</html>
