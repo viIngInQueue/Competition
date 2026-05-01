@@ -4,7 +4,7 @@
 ## 🎯 Tổng quan
 
 Phân tích dữ liệu, tạo dashboard và xây dựng mô hình học máy cho bài toán dự đoán doanh thu tương lai của 1 công ti thương mại điện tử tại Việt Nam
-Với tập dữ liệu cho việc phân tích từ năm 2012-2022
+với tập dữ liệu cho việc phân tích từ năm 2012-2022
 
 **Mô hình:**
 - LightGBM + XGBoost ensemble  
